@@ -1,7 +1,6 @@
-env/
+.env/
 .vscode/
-index.html/
 .replit/
 /.idea
-/Pipfile
-/Pipfile.lock
+Pipfile/
+Pipfile.lock/
