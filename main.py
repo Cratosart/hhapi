@@ -1,111 +1,125 @@
 import os
 import requests
 
-from terminaltables import AsciiTable
 from itertools import count
+from terminaltables import AsciiTable
 
 
 def predict_rub_salary(vacancy):
     salary = vacancy['salary']
-    try:
-        if salary['from'] is not None and salary['currency'] == 'RUR':
-            if salary['to'] is not None:
-                zarplata = (salary['from'] + salary['to']) / 2
-                return zarplata
-            elif salary['to'] is None:
-                zarplata = salary['from'] * 1.2
-                return zarplata
-            else:
-                return None
-        elif salary['from'] is None and salary['to'] is not None:
-            zarplata = salary['to'] * 0.8
-            return zarplata
-        else:
-            return None
-    except:
+    if not salary:
         return None
+    if salary['currency'] == 'RUR':
+        wage = calculation_salary_values(salary['from'], salary['to'])
+        return wage
 
 
 def predict_rub_salary_for_superJob(vacancy):
-    salary = (int((vacancy['payment_from'] + vacancy['payment_to']) / 2))
-    if salary is not None:
-        return salary
+    if vacancy['currency'] == 'rub':
+        wage = calculation_salary_values(vacancy['payment_from'],vacancy['payment_to'])
+        if wage is not None:
+            return wage
 
 
-def create_table(dict_date):
+def calculation_salary_values(of, to):
+    if of != 0:
+        if to != 0:
+            wage = (of+to)/2
+            return wage
+        elif to == 0:
+            wage = of*1.2
+            return wage
+    elif of == 0 and to !=0:
+        wage = to*0.8
+        return wage
+
+
+def create_table(dict_date, title_table):
     table_data = [['Язык программирования', 'Вакансий найдено', 'Вакансий использовано', 'Средняя зарплата']]
-    for key, value in dict_date.items():
-        lang = key
-        found = dict_date[key]['vacancies_found']
-        proc = dict_date[key]['vacancies_processed']
-        ave = int(dict_date[key]['average_salary'])
-        table_data.append([lang, found, proc, ave])
-    return table_data
+    for programming_language, statistics_data in dict_date.items():
+        table_data.append([programming_language, statistics_data['vacancies_found'], statistics_data['vacancies_processed'], int(statistics_data['average_salary'])])
+        title = title_table
+        table = AsciiTable(table_data, title)
+        table.inner_row_border = True
+    return table.table
 
-if __name__ == '__main__':
-    prog = {}
+
+def getting_data_from_hh(url, language):
     salary = []
-    top_programming_language = ["JavaScript", "Java", "Python", "Ruby", "PHP", "C++", "C#", "C"]
-
-    for language in top_programming_language:
-        for page in count(0):
-            url = 'https://api.hh.ru/vacancies'
-            payload = {'text': language,
+    for page in count(0):
+        payload = {'text': language,
                        'area': '1',
                        'period': '30',
                        'page': page
                        }
-            info = requests.get(url, params=payload)
-            info.raise_for_status()
-            counter = info.json()['found']
-            vacancies = info.json()['items']
-            if page >= info.json()['pages'] - 1:
-                salary.clear()
-                break
-            if language == language:
-                for job_vacancy in vacancies:
-                    zarplata = predict_rub_salary(job_vacancy)
-                    if zarplata is not None:
-                        salary.append(zarplata)
-                        itog = (int(sum(salary) / (len(salary))))
-                        prog[language] = {"vacancies_found": counter, "vacancies_processed": len(salary),
-                                          "average_salary": itog}
+        info = requests.get(url, params=payload)
+        info.raise_for_status()
 
-        API_KEY_SJ = os.environ['API_KEY_SJ']
-        prog_sj = {}
-        money = []
-        url = 'https://api.superjob.ru/2.0/vacancies/'
-        headers = {
-            'X-Api-App-Id': API_KEY_SJ
+        collected_data = info.json
+        counter = collected_data['found']
+        vacancies = collected_data['items']
+        if page >= collected_data['pages']-1:
+            salary.clear
+            break
+        for job_vacancy in vacancies:
+            wage = predict_rub_salary(job_vacancy)
+            if wage is not None:
+                salary.append(wage)
+
+        page+=1
+    total = (int(sum(salary) / (len(salary))))
+    statistics[language] = {"vacancies_found": counter, "vacancies_processed": len(salary),
+                      "average_salary": total}
+    return statistics
+
+def getting_data_from_sj(url, language):
+    money = []
+    headers = {
+        'X-Api-App-Id': API_KEY_SJ
+    }
+    for page in count(0):
+        payload = {
+            'keyword': f'Программист {language}',
+            'geo[t][0]': 4,
+            'page': page
             }
-        for language in top_programming_language:
-            for page in count(0):
-                payload = {
-                    'keyword': f'Программист {language}',
-                    'geo[t][0]': 4,
-                    'page': page
-                }
-                job_sj = requests.get(url, headers=headers, params=payload)
-                job_sj.raise_for_status()
-                counter = job_sj.json()['total']
-                info = job_sj.json()['objects']
-                if job_sj.json()['more'] == False:
-                    money.clear()
-                    break
-                for job in info:
-                    salary = (predict_rub_salary_for_superJob(job))
-                    money.append(salary)
-                    itog = sum(money) / len(money)
-                    prog_sj[language] = {"vacancies_found": counter, "vacancies_processed": len(money), "average_salary": itog}
+        job_sj = requests.get(url, headers=headers, params=payload)
+        job_sj.raise_for_status()
+        collected_data = job_sj.json()
+        counter = collected_data['total']
+        info = collected_data['objects']
+        if collected_data['more'] == False:
+            break
+        for job in info:
+            salary = (predict_rub_salary_for_superJob(job))
+            if salary is not None:
+                money.append(salary)
 
-        table_data_sj = create_table(prog_sj)
-        title = "Work on SuperJob Moscow"
-        table = AsciiTable(table_data_sj, title)
-        table.inner_row_border = True
-        print(table.table)
 
-        table_data_hh = create_table(prog)
-        title = "Work on HeadHunter Moscow"
-        table = AsciiTable(table_data_hh, title)
-        table.inner_row_border = True
-        print(table.table)
+        page+=1
+
+    if money:
+        total = sum(money) / len(money)
+        statistics[language] = {"vacancies_found": counter, "vacancies_processed": len(money),
+                                     "average_salary": total}
+        return statistics_sj
+    else:
+        statistics_sj[language] = {"vacancies_found": counter, "vacancies_processed": 0,
+                                     "average_salary": 0}
+        return statistics_sj
+
+
+if __name__ == '__main__':
+    API_KEY_SJ = os.environ['API_KEY_SJ']
+    statistics = {}
+    statistics_sj = {}
+    top_programming_language = ["JavaScript", "Java", "Python", "Ruby", "PHP", "C++", "C#", "C"]
+    url_hh = 'https://api.hh.ru/vacancies'
+    url_sj = 'https://api.superjob.ru/2.0/vacancies/'
+    for language in top_programming_language:
+        statistics = getting_data_from_hh(url_hh, language)
+        statistics_sj = getting_data_from_sj(url_sj, language)
+    print(create_table(prog, "Work on HeadHunter Moscow"))
+    print(create_table(prog_sj, "Work on SuperJob Moscow"))
+
+
