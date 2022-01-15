@@ -10,18 +10,18 @@ def predict_rub_salary_from_hh(vacancy):
     if not salary:
         return None
     elif salary['currency'] == 'RUR':
-        wage = calculation_salary_values(salary['from'], salary['to'])
+        wage = calculate_salary_values(salary['from'], salary['to'])
         return wage
 
 
 def predict_rub_salary_for_superJob(vacancy):
     if vacancy['currency'] == 'rub':
-        wage = calculation_salary_values(vacancy['payment_from'],vacancy['payment_to'])
+        wage = calculate_salary_values(vacancy['payment_from'],vacancy['payment_to'])
         if wage:
             return wage
 
 
-def calculation_salary_values(of, to):
+def calculate_salary_values(of, to):
     if of and to:
         wage = (of+to)/2
         return wage
@@ -42,7 +42,7 @@ def create_table(dict_date, title_table):
     return table.table
 
 
-def getting_data_from_hh(url, language):
+def get_data_from_hh(url, language):
     salary = []
     for page in count(0):
         payload = {'text': language,
@@ -73,7 +73,7 @@ def getting_data_from_hh(url, language):
                             "average_salary": total}
     return statistics
 
-def getting_data_from_sj(url, language):
+def get_data_from_sj(url, language):
     money = []
     headers = {
         'X-Api-App-Id': API_KEY_SJ
@@ -117,7 +117,7 @@ if __name__ == '__main__':
     url_hh = 'https://api.hh.ru/vacancies'
     url_sj = 'https://api.superjob.ru/2.0/vacancies/'
     for language in top_programming_language:
-        statistics = getting_data_from_hh(url_hh, language)
-        statistics_sj = getting_data_from_sj(url_sj, language)
+        statistics = get_data_from_hh(url_hh, language)
+        statistics_sj = get_data_from_sj(url_sj, language)
     print(create_table(statistics, "Work on HeadHunter Moscow"))
     print(create_table(statistics_sj, "Work on SuperJob Moscow"))
