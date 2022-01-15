@@ -17,7 +17,7 @@ def predict_rub_salary(vacancy):
 def predict_rub_salary_for_superJob(vacancy):
     if vacancy['currency'] == 'rub':
         wage = calculation_salary_values(vacancy['payment_from'],vacancy['payment_to'])
-        if wage is not None:
+        if wage:
             return wage
 
 
@@ -62,7 +62,7 @@ def getting_data_from_hh(url, language):
             break
         for job_vacancy in vacancies:
             wage = predict_rub_salary(job_vacancy)
-            if wage is not None:
+            if wage:
                 salary.append(wage)
 
         page+=1
