@@ -87,7 +87,7 @@ def getting_data_from_sj(url, language):
         collected_data = job_sj.json()
         counter = collected_data['total']
         info = collected_data['objects']
-        if collected_data['more'] == False:
+        if not collected_data['more']:
             break
         for job in info:
             salary = (predict_rub_salary_for_superJob(job))
