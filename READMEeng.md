@@ -20,8 +20,8 @@ py main.py
 
 ### Environment variables
 
-The program takes keys from environment variable.
-Place an .env file in the root directory with the following parameters:
+The program takes key from environment variable.
+Place the .env file in the root directory with the following options:
 
 
 ```
