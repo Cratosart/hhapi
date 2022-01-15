@@ -1,5 +1,6 @@
 import os
 import requests
+import time
 
 from itertools import count
 from terminaltables import AsciiTable
@@ -10,14 +11,19 @@ def predict_rub_salary_from_hh(vacancy):
     if not salary:
         return None
     elif salary['currency'] == 'RUR':
-        wage = calculate_salary_values(salary['from'], salary['to'])
+        wage = calculate_salary_values(
+            salary['from'],
+            salary['to']
+        )
         return wage
 
 
 def predict_rub_salary_for_superJob(vacancy):
     if vacancy['currency'] == 'rub':
-        wage = calculate_salary_values(vacancy['payment_from'],
-                                       vacancy['payment_to'])
+        wage = calculate_salary_values(
+            vacancy['payment_from'],
+            vacancy['payment_to']
+        )
         if wage:
             return wage
 
@@ -40,10 +46,12 @@ def create_table(dict_date, title_table):
                    'Вакансий использовано',
                    'Средняя зарплата']]
     for programming_language, statistics_data in dict_date.items():
-        table_data.append([programming_language,
-                           statistics_data['vacancies_found'],
-                           statistics_data['vacancies_processed'],
-                           int(statistics_data['average_salary'])])
+        table_data.append([
+            programming_language,
+            statistics_data['vacancies_found'],
+            statistics_data['vacancies_processed'],
+            int(statistics_data['average_salary'])
+        ])
         table = AsciiTable(table_data, title_table)
         table.inner_row_border = True
     return table.table
@@ -52,13 +60,21 @@ def create_table(dict_date, title_table):
 def get_data_from_hh(url, language):
     salary = []
     for page in count(0):
+        time.sleep(0.3)
+        headers = {
+            'User-Agent': 'api-test-agent'
+        }
         payload = {
             'text': language,
             'area': '1',
             'period': '30',
             'page': page
                     }
-        info = requests.get(url, params=payload)
+        info = requests.get(
+            url,
+            headers=headers,
+            params=payload
+        )
         info.raise_for_status()
 
         collected_data = info.json()
@@ -73,20 +89,20 @@ def get_data_from_hh(url, language):
 
         page += 1
     if salary:
-        total = sum(salary) / len(money)
+        total = sum(salary) / len(salary)
     else:
         total = 0
 
     statistics[language] = {'vacancies_found': counter,
-                            'vacancies_processed': len(money),
+                            'vacancies_processed': len(salary),
                             'average_salary': total}
     return statistics
 
 
-def get_data_from_sj(url, language):
+def get_data_from_sj(url, language, API_KEY):
     money = []
     headers = {
-        'X-Api-App-Id': API_KEY_SJ
+        'X-Api-App-Id': API_KEY
     }
     for page in count(0):
         payload = {
@@ -122,8 +138,8 @@ def get_data_from_sj(url, language):
 
 if __name__ == '__main__':
     API_KEY_SJ = os.environ['API_KEY_SJ']
-    statistics = {}
-    statistics_sj = {}
+    # statistics = {}
+    # statistics_sj = {}
     top_programming_language = [
         'JavaScript',
         'Java',
@@ -143,7 +159,8 @@ if __name__ == '__main__':
         )
         statistics_sj = get_data_from_sj(
             url_sj,
-            language
+            language,
+            API_KEY_SJ
         )
     print(create_table(
         statistics,
