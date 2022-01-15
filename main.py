@@ -16,7 +16,8 @@ def predict_rub_salary_from_hh(vacancy):
 
 def predict_rub_salary_for_superJob(vacancy):
     if vacancy['currency'] == 'rub':
-        wage = calculate_salary_values(vacancy['payment_from'],vacancy['payment_to'])
+        wage = calculate_salary_values(vacancy['payment_from'],
+                                       vacancy['payment_to'])
         if wage:
             return wage
 
@@ -34,9 +35,15 @@ def calculate_salary_values(of, to):
 
 
 def create_table(dict_date, title_table):
-    table_data = [['Язык программирования', 'Вакансий найдено', 'Вакансий использовано', 'Средняя зарплата']]
+    table_data = [['Язык программирования',
+                   'Вакансий найдено',
+                   'Вакансий использовано',
+                   'Средняя зарплата']]
     for programming_language, statistics_data in dict_date.items():
-        table_data.append([programming_language, statistics_data['vacancies_found'], statistics_data['vacancies_processed'], int(statistics_data['average_salary'])])
+        table_data.append([programming_language,
+                           statistics_data['vacancies_found'],
+                           statistics_data['vacancies_processed'],
+                           int(statistics_data['average_salary'])])
         table = AsciiTable(table_data, title_table)
         table.inner_row_border = True
     return table.table
@@ -45,11 +52,12 @@ def create_table(dict_date, title_table):
 def get_data_from_hh(url, language):
     salary = []
     for page in count(0):
-        payload = {'text': language,
-                       'area': '1',
-                       'period': '30',
-                       'page': page
-                       }
+        payload = {
+            'text': language,
+            'area': '1',
+            'period': '30',
+            'page': page
+                    }
         info = requests.get(url, params=payload)
         info.raise_for_status()
 
@@ -63,15 +71,17 @@ def get_data_from_hh(url, language):
             if wage:
                 salary.append(wage)
 
-        page+=1
+        page += 1
     if salary:
         total = sum(salary) / len(money)
     else:
         total = 0
 
-    statistics[language] = {"vacancies_found": counter, "vacancies_processed": len(money),
-                            "average_salary": total}
+    statistics[language] = {'vacancies_found': counter,
+                            'vacancies_processed': len(money),
+                            'average_salary': total}
     return statistics
+
 
 def get_data_from_sj(url, language):
     money = []
@@ -95,17 +105,18 @@ def get_data_from_sj(url, language):
             salary = (predict_rub_salary_for_superJob(job))
             if salary is not None:
                 money.append(salary)
-
-
-        page+=1
+        page += 1
 
     if money:
         total = sum(money) / len(money)
     else:
         total = 0
 
-    statistics[language] = {"vacancies_found": counter, "vacancies_processed": len(money),
-                                     "average_salary": total}
+    statistics[language] = {
+        'vacancies_found': counter,
+        'vacancies_processed': len(money),
+        'average_salary': total
+    }
     return statistics
 
 
@@ -113,11 +124,32 @@ if __name__ == '__main__':
     API_KEY_SJ = os.environ['API_KEY_SJ']
     statistics = {}
     statistics_sj = {}
-    top_programming_language = ["JavaScript", "Java", "Python", "Ruby", "PHP", "C++", "C#", "C"]
+    top_programming_language = [
+        'JavaScript',
+        'Java',
+        'Python',
+        'Ruby',
+        'PHP',
+        'C++',
+        'C#',
+        'C'
+    ]
     url_hh = 'https://api.hh.ru/vacancies'
     url_sj = 'https://api.superjob.ru/2.0/vacancies/'
     for language in top_programming_language:
-        statistics = get_data_from_hh(url_hh, language)
-        statistics_sj = get_data_from_sj(url_sj, language)
-    print(create_table(statistics, "Work on HeadHunter Moscow"))
-    print(create_table(statistics_sj, "Work on SuperJob Moscow"))
+        statistics = get_data_from_hh(
+            url_hh,
+            language
+        )
+        statistics_sj = get_data_from_sj(
+            url_sj,
+            language
+        )
+    print(create_table(
+        statistics,
+        'Work on HeadHunter Moscow'
+    ))
+    print(create_table(
+        statistics_sj,
+        'Work on SuperJob Moscow'
+    ))
