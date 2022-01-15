@@ -37,8 +37,7 @@ def create_table(dict_date, title_table):
     table_data = [['Язык программирования', 'Вакансий найдено', 'Вакансий использовано', 'Средняя зарплата']]
     for programming_language, statistics_data in dict_date.items():
         table_data.append([programming_language, statistics_data['vacancies_found'], statistics_data['vacancies_processed'], int(statistics_data['average_salary'])])
-        title = title_table
-        table = AsciiTable(table_data, title)
+        table = AsciiTable(table_data, title_table)
         table.inner_row_border = True
     return table.table
 
@@ -58,7 +57,6 @@ def getting_data_from_hh(url, language):
         counter = collected_data['found']
         vacancies = collected_data['items']
         if page >= collected_data['pages']-1:
-            salary.clear
             break
         for job_vacancy in vacancies:
             wage = predict_rub_salary_from_hh(job_vacancy)
@@ -66,9 +64,13 @@ def getting_data_from_hh(url, language):
                 salary.append(wage)
 
         page+=1
-    total = (int(sum(salary) / (len(salary))))
-    statistics[language] = {"vacancies_found": counter, "vacancies_processed": len(salary),
-                      "average_salary": total}
+    if salary:
+        total = sum(salary) / len(money)
+    else:
+        total = 0
+
+    statistics[language] = {"vacancies_found": counter, "vacancies_processed": len(money),
+                            "average_salary": total}
     return statistics
 
 def getting_data_from_sj(url, language):
@@ -99,13 +101,12 @@ def getting_data_from_sj(url, language):
 
     if money:
         total = sum(money) / len(money)
-        statistics[language] = {"vacancies_found": counter, "vacancies_processed": len(money),
-                                     "average_salary": total}
-        return statistics_sj
     else:
-        statistics_sj[language] = {"vacancies_found": counter, "vacancies_processed": 0,
-                                     "average_salary": 0}
-        return statistics_sj
+        total = 0
+
+    statistics[language] = {"vacancies_found": counter, "vacancies_processed": len(money),
+                                     "average_salary": total}
+    return statistics
 
 
 if __name__ == '__main__':
