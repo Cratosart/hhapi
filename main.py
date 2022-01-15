@@ -55,7 +55,7 @@ def getting_data_from_hh(url, language):
         info = requests.get(url, params=payload)
         info.raise_for_status()
 
-        collected_data = info.json
+        collected_data = info.json()
         counter = collected_data['found']
         vacancies = collected_data['items']
         if page >= collected_data['pages']-1:
