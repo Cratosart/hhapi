@@ -5,7 +5,7 @@ from itertools import count
 from terminaltables import AsciiTable
 
 
-def predict_rub_salary(vacancy):
+def predict_rub_salary_from_hh(vacancy):
     salary = vacancy['salary']
     if not salary:
         return None
@@ -61,7 +61,7 @@ def getting_data_from_hh(url, language):
             salary.clear
             break
         for job_vacancy in vacancies:
-            wage = predict_rub_salary(job_vacancy)
+            wage = predict_rub_salary_from_hh(job_vacancy)
             if wage:
                 salary.append(wage)
 
