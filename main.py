@@ -24,7 +24,7 @@ def predict_rub_salary_for_superJob(vacancy):
 
 def calculate_salary_values(of, to):
     if of and to:
-        wage = (of+to)/2
+        wage = (of + to)/2
         return wage
     elif not to:
         wage = of*1.2
