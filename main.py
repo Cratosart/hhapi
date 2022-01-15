@@ -86,8 +86,6 @@ def get_data_from_hh(url, language):
             wage = predict_rub_salary_from_hh(job_vacancy)
             if wage:
                 salary.append(wage)
-
-        page += 1
     if salary:
         total = sum(salary) / len(salary)
     else:
@@ -121,8 +119,6 @@ def get_data_from_sj(url, language, API_KEY):
             salary = (predict_rub_salary_for_superJob(job))
             if salary is not None:
                 money.append(salary)
-        page += 1
-
     if money:
         total = sum(money) / len(money)
     else:
@@ -138,8 +134,8 @@ def get_data_from_sj(url, language, API_KEY):
 
 if __name__ == '__main__':
     API_KEY_SJ = os.environ['API_KEY_SJ']
-    # statistics = {}
-    # statistics_sj = {}
+    statistics = {}
+    statistics_sj = {}
     top_programming_language = [
         'JavaScript',
         'Java',
