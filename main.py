@@ -22,14 +22,14 @@ def predict_rub_salary_for_superJob(vacancy):
 
 
 def calculation_salary_values(of, to):
-    if of != 0:
-        if to != 0:
+    if of:
+        if to:
             wage = (of+to)/2
             return wage
-        elif to == 0:
+        elif not to:
             wage = of*1.2
             return wage
-    elif of == 0 and to !=0:
+    elif not of and to:
         wage = to*0.8
         return wage
 
@@ -119,5 +119,5 @@ if __name__ == '__main__':
     for language in top_programming_language:
         statistics = getting_data_from_hh(url_hh, language)
         statistics_sj = getting_data_from_sj(url_sj, language)
-    print(create_table(prog, "Work on HeadHunter Moscow"))
-    print(create_table(prog_sj, "Work on SuperJob Moscow"))
+    print(create_table(statistics, "Work on HeadHunter Moscow"))
+    print(create_table(statistics_sj, "Work on SuperJob Moscow"))
