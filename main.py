@@ -9,7 +9,7 @@ def predict_rub_salary(vacancy):
     salary = vacancy['salary']
     if not salary:
         return None
-    if salary['currency'] == 'RUR':
+    elif salary['currency'] == 'RUR':
         wage = calculation_salary_values(salary['from'], salary['to'])
         return wage
 
@@ -22,13 +22,12 @@ def predict_rub_salary_for_superJob(vacancy):
 
 
 def calculation_salary_values(of, to):
-    if of:
-        if to:
-            wage = (of+to)/2
-            return wage
-        elif not to:
-            wage = of*1.2
-            return wage
+    if of and to:
+        wage = (of+to)/2
+        return wage
+    elif not to:
+        wage = of*1.2
+        return wage
     elif not of and to:
         wage = to*0.8
         return wage
