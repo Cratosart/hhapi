@@ -121,5 +121,3 @@ if __name__ == '__main__':
         statistics_sj = getting_data_from_sj(url_sj, language)
     print(create_table(prog, "Work on HeadHunter Moscow"))
     print(create_table(prog_sj, "Work on SuperJob Moscow"))
-
-
