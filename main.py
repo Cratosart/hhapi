@@ -6,6 +6,42 @@ from itertools import count
 from terminaltables import AsciiTable
 
 
+# def main():
+#     API_KEY_SJ = os.environ['API_KEY_SJ']
+#     statistics = {}
+#     statistics_sj = {}
+#     top_programming_language = [
+#         'JavaScript',
+#         'Java',
+#         'Python',
+#         'Ruby',
+#         'PHP',
+#         'C++',
+#         'C#',
+#         'C'
+#     ]
+#     url_hh = 'https://api.hh.ru/vacancies'
+#     url_sj = 'https://api.superjob.ru/2.0/vacancies/'
+#     for language in top_programming_language:
+#         statistics = get_data_from_hh(
+#             url_hh,
+#             language
+#         )
+#         statistics_sj = get_data_from_sj(
+#             url_sj,
+#             language,
+#             API_KEY_SJ
+#         )
+#     print(create_table(
+#         statistics,
+#         'Work on HeadHunter Moscow'
+#     ))
+#     print(create_table(
+#         statistics_sj,
+#         'Work on SuperJob Moscow'
+#     ))
+
+
 def predict_rub_salary_from_hh(vacancy):
     salary = vacancy['salary']
     if not salary:
@@ -58,6 +94,7 @@ def create_table(dict_date, title_table):
 
 
 def get_data_from_hh(url, language):
+    statistics = {}
     salary = []
     for page in count(0):
         time.sleep(0.3)
@@ -98,6 +135,7 @@ def get_data_from_hh(url, language):
 
 
 def get_data_from_sj(url, language, API_KEY):
+    statistics = {}
     money = []
     headers = {
         'X-Api-App-Id': API_KEY
@@ -133,6 +171,8 @@ def get_data_from_sj(url, language, API_KEY):
 
 
 if __name__ == '__main__':
+    # statistics = {}
+    # statistics_sj = {}
     API_KEY_SJ = os.environ['API_KEY_SJ']
     statistics = {}
     statistics_sj = {}
