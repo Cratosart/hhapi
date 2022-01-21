@@ -37,24 +37,24 @@ def calculate_average_salary(of, to):
         return wage
 
 
-def create_table(date_vacancies, title_table):
-    table_data = [['Язык программирования',
+def create_table(vacancies, title):
+    columns = [['Язык программирования',
                    'Вакансий найдено',
                    'Вакансий использовано',
                    'Средняя зарплата']]
-    for programming_language, statistics_data in date_vacancies.items():
-        table_data.append([
-            programming_language,
-            statistics_data['vacancies_found'],
-            statistics_data['vacancies_processed'],
-            int(statistics_data['average_salary'])
+    for language, statistics in vacancies.items():
+        columns.append([
+            language,
+            statistics['vacancies_found'],
+            statistics['vacancies_processed'],
+            int(statistics['average_salary'])
         ])
-        table = AsciiTable(table_data, title_table)
+        table = AsciiTable(columns, title)
         table.inner_row_border = True
     return table.table
 
 
-def get_data_from_hh(url, language):
+def get_from_hh(url, language):
     salary = []
     for page in count(0):
         time.sleep(0.3)
@@ -74,10 +74,10 @@ def get_data_from_hh(url, language):
         )
         info.raise_for_status()
 
-        collected_data = info.json()
-        counter = collected_data['found']
-        vacancies = collected_data['items']
-        if page >= collected_data['pages']-1:
+        collected = info.json()
+        vacancies_found = collected['found']
+        vacancies = collected['items']
+        if page >= collected['pages']-1:
             break
         for job_vacancy in vacancies:
             wage = predict_rub_salary_from_hh(job_vacancy)
@@ -88,14 +88,14 @@ def get_data_from_hh(url, language):
     else:
         total = 0
 
-    return {'vacancies_found': counter,
+    return {'vacancies_found': vacancies_found,
             'vacancies_processed': len(salary),
             'average_salary': total
             }
 
 
 
-def get_data_from_sj(url, language, API_KEY):
+def get_from_sj(url, language, API_KEY):
     money = []
     headers = {
         'X-Api-App-Id': API_KEY
@@ -108,10 +108,10 @@ def get_data_from_sj(url, language, API_KEY):
             }
         job_sj = requests.get(url, headers=headers, params=payload)
         job_sj.raise_for_status()
-        collected_data = job_sj.json()
-        counter = collected_data['total']
-        info = collected_data['objects']
-        if not collected_data['more']:
+        collected = job_sj.json()
+        vacancies_found = collected['total']
+        info = collected['objects']
+        if not collected['more']:
             break
         for job in info:
             salary = (predict_rub_salary_for_superJob(job))
@@ -123,7 +123,7 @@ def get_data_from_sj(url, language, API_KEY):
         total = 0
 
     return {
-        'vacancies_found': counter,
+        'vacancies_found': vacancies_found,
         'vacancies_processed': len(money),
         'average_salary': total
     }
@@ -147,11 +147,11 @@ if __name__ == '__main__':
     url_hh = 'https://api.hh.ru/vacancies'
     url_sj = 'https://api.superjob.ru/2.0/vacancies/'
     for language in top_programming_language:
-        statistics[language] = get_data_from_hh(
+        statistics[language] = get_from_hh(
             url_hh,
             language
         )
-        statistics_sj[language] = get_data_from_sj(
+        statistics_sj[language] = get_from_sj(
             url_sj,
             language,
             api_key_sj
