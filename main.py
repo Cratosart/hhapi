@@ -6,42 +6,6 @@ from itertools import count
 from terminaltables import AsciiTable
 
 
-# def main():
-#     API_KEY_SJ = os.environ['API_KEY_SJ']
-#     statistics = {}
-#     statistics_sj = {}
-#     top_programming_language = [
-#         'JavaScript',
-#         'Java',
-#         'Python',
-#         'Ruby',
-#         'PHP',
-#         'C++',
-#         'C#',
-#         'C'
-#     ]
-#     url_hh = 'https://api.hh.ru/vacancies'
-#     url_sj = 'https://api.superjob.ru/2.0/vacancies/'
-#     for language in top_programming_language:
-#         statistics = get_data_from_hh(
-#             url_hh,
-#             language
-#         )
-#         statistics_sj = get_data_from_sj(
-#             url_sj,
-#             language,
-#             API_KEY_SJ
-#         )
-#     print(create_table(
-#         statistics,
-#         'Work on HeadHunter Moscow'
-#     ))
-#     print(create_table(
-#         statistics_sj,
-#         'Work on SuperJob Moscow'
-#     ))
-
-
 def predict_rub_salary_from_hh(vacancy):
     salary = vacancy['salary']
     if not salary:
