@@ -37,12 +37,12 @@ def calculate_average_salary(of, to):
         return wage
 
 
-def create_table(dict_date, title_table):
+def create_table(date_vacancies, title_table):
     table_data = [['Язык программирования',
                    'Вакансий найдено',
                    'Вакансий использовано',
                    'Средняя зарплата']]
-    for programming_language, statistics_data in dict_date.items():
+    for programming_language, statistics_data in date_vacancies.items():
         table_data.append([
             programming_language,
             statistics_data['vacancies_found'],
