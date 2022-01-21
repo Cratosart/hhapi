@@ -135,8 +135,6 @@ def get_data_from_sj(url, language, API_KEY):
 
 
 if __name__ == '__main__':
-    # statistics = {}
-    # statistics_sj = {}
     API_KEY_SJ = os.environ['API_KEY_SJ']
     statistics = {}
     statistics_sj = {}
