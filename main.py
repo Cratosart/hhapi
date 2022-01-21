@@ -134,7 +134,7 @@ def get_data_from_sj(url, language, API_KEY):
 
 
 if __name__ == '__main__':
-    API_KEY_SJ = os.environ['API_KEY_SJ']
+    api_key_sj = os.environ['API_KEY_SJ']
     statistics = {}
     statistics_sj = {}
     top_programming_language = [
@@ -157,7 +157,7 @@ if __name__ == '__main__':
         statistics_sj[language] = get_data_from_sj(
             url_sj,
             language,
-            API_KEY_SJ
+            api_key_sj
         )
     print(create_table(
         statistics,
