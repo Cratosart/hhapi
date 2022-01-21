@@ -56,17 +56,18 @@ def create_table(vacancies, title):
 
 def get_from_hh(url, language):
     salary = []
+    page = 0
+    headers = {
+        'User-Agent': 'api-test-agent'
+    }
+    payload = {
+        'text': language,
+        'area': '1',
+        'period': '30',
+        'page': page
+    }
     for page in count(0):
         time.sleep(0.3)
-        headers = {
-            'User-Agent': 'api-test-agent'
-        }
-        payload = {
-            'text': language,
-            'area': '1',
-            'period': '30',
-            'page': page
-                    }
         info = requests.get(
             url,
             headers=headers,
@@ -97,15 +98,16 @@ def get_from_hh(url, language):
 
 def get_from_sj(url, language, API_KEY):
     money = []
+    page = 0
     headers = {
         'X-Api-App-Id': API_KEY
     }
+    payload = {
+        'keyword': f'Программист {language}',
+        'geo[t][0]': 4,
+        'page': page
+    }
     for page in count(0):
-        payload = {
-            'keyword': f'Программист {language}',
-            'geo[t][0]': 4,
-            'page': page
-            }
         job_sj = requests.get(url, headers=headers, params=payload)
         job_sj.raise_for_status()
         collected = job_sj.json()
