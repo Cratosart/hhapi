@@ -22,8 +22,7 @@ def predict_rub_salary_for_superJob(vacancy):
             vacancy['payment_from'],
             vacancy['payment_to']
         )
-        if wage:
-            return wage
+        return wage
 
 
 def calculate_salary_values(of, to):
