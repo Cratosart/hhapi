@@ -8,9 +8,7 @@ from terminaltables import AsciiTable
 
 def predict_rub_salary_from_hh(vacancy):
     salary = vacancy['salary']
-    if not salary:
-        return None
-    elif salary['currency'] == 'RUR':
+    if salary or salary['currency'] == 'RUR':
         wage = calculate_salary_values(
             salary['from'],
             salary['to']
