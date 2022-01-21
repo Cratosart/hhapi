@@ -9,7 +9,7 @@ from terminaltables import AsciiTable
 def predict_rub_salary_from_hh(vacancy):
     salary = vacancy['salary']
     if salary or salary['currency'] == 'RUR':
-        wage = calculate_salary_values(
+        wage = calculate_average_salary(
             salary['from'],
             salary['to']
         )
@@ -18,14 +18,14 @@ def predict_rub_salary_from_hh(vacancy):
 
 def predict_rub_salary_for_superJob(vacancy):
     if vacancy['currency'] == 'rub':
-        wage = calculate_salary_values(
+        wage = calculate_average_salary(
             vacancy['payment_from'],
             vacancy['payment_to']
         )
         return wage
 
 
-def calculate_salary_values(of, to):
+def calculate_average_salary(of, to):
     if of and to:
         wage = (of + to)/2
         return wage
