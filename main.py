@@ -58,7 +58,6 @@ def create_table(dict_date, title_table):
 
 
 def get_data_from_hh(url, language):
-    statistics = {}
     salary = []
     for page in count(0):
         time.sleep(0.3)
@@ -92,14 +91,14 @@ def get_data_from_hh(url, language):
     else:
         total = 0
 
-    statistics[language] = {'vacancies_found': counter,
-                            'vacancies_processed': len(salary),
-                            'average_salary': total}
-    return statistics
+    return {'vacancies_found': counter,
+            'vacancies_processed': len(salary),
+            'average_salary': total
+            }
+
 
 
 def get_data_from_sj(url, language, API_KEY):
-    statistics = {}
     money = []
     headers = {
         'X-Api-App-Id': API_KEY
@@ -126,12 +125,12 @@ def get_data_from_sj(url, language, API_KEY):
     else:
         total = 0
 
-    statistics[language] = {
+    return {
         'vacancies_found': counter,
         'vacancies_processed': len(money),
         'average_salary': total
     }
-    return statistics
+
 
 
 if __name__ == '__main__':
@@ -151,11 +150,11 @@ if __name__ == '__main__':
     url_hh = 'https://api.hh.ru/vacancies'
     url_sj = 'https://api.superjob.ru/2.0/vacancies/'
     for language in top_programming_language:
-        statistics = get_data_from_hh(
+        statistics[language] = get_data_from_hh(
             url_hh,
             language
         )
-        statistics_sj = get_data_from_sj(
+        statistics_sj[language] = get_data_from_sj(
             url_sj,
             language,
             API_KEY_SJ
