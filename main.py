@@ -8,12 +8,14 @@ from terminaltables import AsciiTable
 
 def predict_rub_salary_from_hh(vacancy):
     salary = vacancy['salary']
-    if salary or salary['currency'] == 'RUR':
-        wage = calculate_average_salary(
-            salary['from'],
-            salary['to']
+    if not salary or not salary['currency'] == 'RUR':
+        return None
+    wage = calculate_average_salary(
+        salary['from'],
+        salary['to']
         )
-        return wage
+    return wage
+
 
 
 def predict_rub_salary_for_superJob(vacancy):
@@ -98,27 +100,26 @@ def get_from_hh(url, language):
 
 def get_from_sj(url, language, API_KEY):
     money = []
-    page = 0
     headers = {
         'X-Api-App-Id': API_KEY
     }
     payload = {
         'keyword': f'Программист {language}',
         'geo[t][0]': 4,
-        'page': page
     }
     for page in count(0):
+        payload['page'] = page
         job_sj = requests.get(url, headers=headers, params=payload)
         job_sj.raise_for_status()
         collected = job_sj.json()
         vacancies_found = collected['total']
         info = collected['objects']
-        if not collected['more']:
-            break
         for job in info:
             salary = (predict_rub_salary_for_superJob(job))
             if salary is not None:
                 money.append(salary)
+        if not collected['more']:
+            break
     if money:
         total = sum(money) / len(money)
     else:
