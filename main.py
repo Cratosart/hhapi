@@ -80,12 +80,12 @@ def get_from_hh(url, language):
         collected = info.json()
         vacancies_found = collected['found']
         vacancies = collected['items']
-        if page >= collected['pages']-1:
-            break
         for job_vacancy in vacancies:
             wage = predict_rub_salary_from_hh(job_vacancy)
             if wage:
                 salary.append(wage)
+        if page >= collected['pages']-1:
+            break
     if salary:
         total = sum(salary) / len(salary)
     else:
