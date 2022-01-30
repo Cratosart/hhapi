@@ -17,7 +17,6 @@ def predict_rub_salary_from_hh(vacancy):
     return wage
 
 
-
 def predict_rub_salary_for_superjob(vacancy):
     if vacancy['currency'] == 'rub':
         wage = calculate_average_salary(
@@ -41,9 +40,9 @@ def calculate_average_salary(of, to):
 
 def create_table(vacancies, title):
     columns = [['Язык программирования',
-                   'Вакансий найдено',
-                   'Вакансий использовано',
-                   'Средняя зарплата']]
+                'Вакансий найдено',
+                'Вакансий использовано',
+                'Средняя зарплата']]
     for language, statistics in vacancies.items():
         columns.append([
             language,
@@ -93,9 +92,7 @@ def get_from_hh(url, language):
 
     return {'vacancies_found': vacancies_found,
             'vacancies_processed': len(salary),
-            'average_salary': total
-            }
-
+            'average_salary': total}
 
 
 def get_from_sj(url, language, api_key):
@@ -130,7 +127,6 @@ def get_from_sj(url, language, api_key):
         'vacancies_processed': len(money),
         'average_salary': total
     }
-
 
 
 if __name__ == '__main__':
