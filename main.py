@@ -9,7 +9,7 @@ from terminaltables import AsciiTable
 def predict_rub_salary_from_hh(vacancy):
     salary = vacancy['salary']
     if not salary or not salary['currency'] == 'RUR':
-        return None
+        return
     wage = calculate_average_salary(
         salary['from'],
         salary['to']
