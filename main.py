@@ -18,7 +18,7 @@ def predict_rub_salary_from_hh(vacancy):
 
 
 
-def predict_rub_salary_for_superJob(vacancy):
+def predict_rub_salary_for_superjob(vacancy):
     if vacancy['currency'] == 'rub':
         wage = calculate_average_salary(
             vacancy['payment_from'],
@@ -98,10 +98,10 @@ def get_from_hh(url, language):
 
 
 
-def get_from_sj(url, language, API_KEY):
+def get_from_sj(url, language, api_key):
     money = []
     headers = {
-        'X-Api-App-Id': API_KEY
+        'X-Api-App-Id': api_key
     }
     payload = {
         'keyword': f'Программист {language}',
@@ -115,7 +115,7 @@ def get_from_sj(url, language, API_KEY):
         vacancies_found = collected['total']
         info = collected['objects']
         for job in info:
-            salary = (predict_rub_salary_for_superJob(job))
+            salary = (predict_rub_salary_for_superjob(job))
             if salary is not None:
                 money.append(salary)
         if not collected['more']:
