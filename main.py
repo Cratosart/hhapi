@@ -133,7 +133,7 @@ if __name__ == '__main__':
     api_key_sj = os.environ['API_KEY_SJ']
     statistics = {}
     statistics_sj = {}
-    top_programming_language = [
+    top_programming_languages = [
         'JavaScript',
         'Java',
         'Python',
@@ -145,7 +145,7 @@ if __name__ == '__main__':
     ]
     url_hh = 'https://api.hh.ru/vacancies'
     url_sj = 'https://api.superjob.ru/2.0/vacancies/'
-    for language in top_programming_language:
+    for language in top_programming_languages:
         statistics[language] = get_from_hh(
             url_hh,
             language
