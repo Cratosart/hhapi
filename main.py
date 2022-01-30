@@ -116,7 +116,7 @@ def get_from_sj(url, language, api_key):
         info = collected['objects']
         for job in info:
             salary = (predict_rub_salary_for_superjob(job))
-            if salary is not None:
+            if salary:
                 money.append(salary)
         if not collected['more']:
             break
