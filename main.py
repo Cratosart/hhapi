@@ -8,8 +8,7 @@ from dotenv import load_dotenv
 from pathlib import Path
 
 
-def predict_rub_salary_from_hh(vacancy):
-    salary = vacancy['salary']
+def predict_rub_salary_from_hh(salary):
     if not salary or not salary['currency'] == 'RUR':
         return
     wage = calculate_average_salary(
@@ -19,11 +18,11 @@ def predict_rub_salary_from_hh(vacancy):
     return wage
 
 
-def predict_rub_salary_for_superjob(vacancy):
-    if vacancy['currency'] == 'rub':
+def predict_rub_salary_for_superjob(vacancy, against, to):
+    if vacancy == 'rub':
         wage = calculate_average_salary(
-            vacancy['payment_from'],
-            vacancy['payment_to']
+            against,
+            to
         )
         return wage
 
@@ -82,7 +81,7 @@ def get_from_hh(url, language):
         vacancies_found = collected['found']
         vacancies = collected['items']
         for job_vacancy in vacancies:
-            wage = predict_rub_salary_from_hh(job_vacancy)
+            wage = predict_rub_salary_from_hh(job_vacancy['salary'])
             if wage:
                 salary.append(wage)
         if page >= collected['pages']-1:
@@ -114,7 +113,7 @@ def get_from_sj(url, language, api_key):
         vacancies_found = collected['total']
         info = collected['objects']
         for job in info:
-            salary = (predict_rub_salary_for_superjob(job))
+            salary = (predict_rub_salary_for_superjob(job['currency'], job['payment_from'], job['payment_to']))
             if salary:
                 money.append(salary)
         if not collected['more']:
