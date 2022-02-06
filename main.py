@@ -56,7 +56,7 @@ def create_table(vacancies, title):
     return table.table
 
 
-def get_from_hh(url, language):
+def get_vacancies_from_hh(url, language):
     salary = []
     page = 0
     headers = {
@@ -96,7 +96,7 @@ def get_from_hh(url, language):
             'average_salary': total}
 
 
-def get_from_sj(url, language, api_key):
+def get_vacancies_from_sj(url, language, api_key):
     money = []
     headers = {
         'X-Api-App-Id': api_key
@@ -150,11 +150,11 @@ if __name__ == '__main__':
     url_hh = 'https://api.hh.ru/vacancies'
     url_sj = 'https://api.superjob.ru/2.0/vacancies/'
     for language in top_programming_languages:
-        statistics[language] = get_from_hh(
+        statistics[language] = get_vacancies_from_hh(
             url_hh,
             language
         )
-        statistics_sj[language] = get_from_sj(
+        statistics_sj[language] = get_vacancies_from_sj(
             url_sj,
             language,
             api_key_sj
