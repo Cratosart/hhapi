@@ -4,6 +4,8 @@ import time
 
 from itertools import count
 from terminaltables import AsciiTable
+from dotenv import load_dotenv
+from pathlib import Path
 
 
 def predict_rub_salary_from_hh(vacancy):
@@ -130,7 +132,10 @@ def get_from_sj(url, language, api_key):
 
 
 if __name__ == '__main__':
-    api_key_sj = os.environ['API_KEY_SJ']
+    load_dotenv()
+    env_path = Path('.')/'.env'
+    load_dotenv(dotenv_path=env_path)
+    api_key_sj = os.getenv('API_KEY_SJ')
     statistics = {}
     statistics_sj = {}
     top_programming_languages = [
